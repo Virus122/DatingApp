@@ -3,7 +3,8 @@ export const environment = {
   apiUrl: {
     base: 'https://localhost:7234/api',
     user: '/user',
-    account: '/account'
+    account: 'https://localhost:7234/api/account',
+    buggy: 'https://localhost:7234/api/buggy'
   }
 };
 

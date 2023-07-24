@@ -8,8 +8,6 @@ import { User } from '../models/user';
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl = environment.apiUrl.base;
-  userApi = environment.apiUrl.user;
   accountApi = environment.apiUrl.account;
 
   private currentUserSource = new BehaviorSubject<User | null>(null);
@@ -20,7 +18,7 @@ export class AccountService {
   ) { }
 
   public login(model: any): Observable<void> {
-    return this.httpClient.post<User>(this.baseUrl + this.accountApi + '/login', model).pipe(
+    return this.httpClient.post<User>(this.accountApi + '/login', model).pipe(
         map((response: User) => {
           const user = response;
           if (user) {
@@ -41,7 +39,7 @@ export class AccountService {
   }
 
   public register(model:any): Observable<User> {
-    return this.httpClient.post<User>(this.baseUrl + this.accountApi + '/register', model).pipe(
+    return this.httpClient.post<User>(this.accountApi + '/register', model).pipe(
       map((user: User) =>  {
         if(user) {
           localStorage.setItem('user', JSON.stringify(user));
