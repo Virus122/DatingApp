@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Member } from '../models/member';
 
@@ -8,6 +8,7 @@ import { Member } from '../models/member';
   providedIn: 'root'
 })
 export class MembersService {
+  members: Member[] = []
 
   private usersUrl = environment.apiUrl.users;
 
@@ -16,11 +17,28 @@ export class MembersService {
   ) { }
 
   public getMembers(): Observable<Member[]> {
-    return this.httpClient.get<Member[]>(this.usersUrl);
+    if (this.members.length > 0) return of(this.members);
+    return this.httpClient.get<Member[]>(this.usersUrl).pipe(
+      map((members: Member[]) => {
+        this.members = members;
+        return members;
+      })
+    )
   }
 
   public getMember(username: string): Observable<Member> {
+    const member = this.members.find((member: Member) => member.userName === username)
+    if (member) return of(member);
     return this.httpClient.get<Member>(this.usersUrl + `/${username}`);
+  }
+
+  public updateMember(member: Member): Observable<void> {
+    return this.httpClient.put(this.usersUrl, member).pipe(
+      map(() => {
+        const index = this.members.indexOf(member);
+        this.members[index] = {...this.members[index], ...member}
+      })
+    )
   }
 
 }
