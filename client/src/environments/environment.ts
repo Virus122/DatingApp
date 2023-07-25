@@ -4,7 +4,8 @@ export const environment = {
     base: 'https://localhost:7234/api',
     user: '/user',
     account: 'https://localhost:7234/api/account',
-    buggy: 'https://localhost:7234/api/buggy'
+    buggy: 'https://localhost:7234/api/buggy',
+    users: 'https://localhost:7234/api/users'
   }
 };
 
