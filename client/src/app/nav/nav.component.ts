@@ -13,7 +13,6 @@ export class NavComponent implements OnInit {
   constructor(
     public accountService: AccountService,
     private router: Router,
-    private toastrService: ToastrService
   ) { }
 
   public pages: { name: string, link: string }[] = [

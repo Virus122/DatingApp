@@ -20,17 +20,13 @@ export class AccountService {
   public login(model: any): Observable<void> {
     return this.httpClient.post<User>(this.accountApi + '/login', model).pipe(
         map((response: User) => {
+          console.log(response)
           const user = response;
           if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-            this.currentUserSource.next(user);
+            this.setCurrentUser(user);
           }
         })
       )
-  }
-
-  public setCurrentUser(user: User) {
-    this.currentUserSource.next(user);
   }
 
   public logout(): void {
@@ -42,11 +38,15 @@ export class AccountService {
     return this.httpClient.post<User>(this.accountApi + '/register', model).pipe(
       map((user: User) =>  {
         if(user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
         return user
       })
     )
+  }
+
+  public setCurrentUser(user: User) {
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSource.next(user);
   }
 }
