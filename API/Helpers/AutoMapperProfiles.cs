@@ -15,6 +15,7 @@ namespace API.Helpers
                 .ForMember((MemberDTO destination) => destination.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotoDTO>();
             CreateMap<MemberUpdateDTO, AppUser>();
+            CreateMap<RegisterDto, AppUser>();
         }
     }
 }
