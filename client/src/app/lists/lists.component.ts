@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Member } from '../models/member';
+import { Pagination } from '../models/pagination';
+import { MembersService } from '../_services/members.service';
 
 @Component({
   selector: 'app-lists',
@@ -6,10 +9,34 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./lists.component.scss']
 })
 export class ListsComponent implements OnInit {
+  members: Member[] | undefined
+  predicate = 'liked';
+  pageNumber = 1;
+  pageSize = 5;
+  pagination:Pagination | undefined;
 
-  constructor() { }
+  constructor(
+    private membersService: MembersService
+  ) { }
 
   ngOnInit(): void {
+    this.loadLikes();
+  }
+
+  public loadLikes(): void {
+    this.membersService.getLikes(this.predicate, this.pageNumber, this.pageSize).subscribe({
+      next: response => {
+        this.members = response.result;
+        this.pagination = response.pagination;
+      }
+    })
+  }
+
+  public pageChanged(event: any): void {
+    if (this.pageNumber !== event.page) {
+      this.pageNumber = event.page;
+      this.loadLikes();
+    }
   }
 
 }

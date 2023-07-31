@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/models/member';
+import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
   selector: 'app-member-card',
@@ -8,24 +11,42 @@ import { Member } from 'src/app/models/member';
 })
 export class MemberCardComponent implements OnInit {
   @Input() member: Member | undefined
-  buttons: { faIcon: string, baseRouteUrl: string, urlProperty: string }[] = [
-    { faIcon : 'user', baseRouteUrl: '/members/', urlProperty: 'userName'},
-    { faIcon : 'heart', baseRouteUrl: '', urlProperty: ''},
-    { faIcon : 'envelope', baseRouteUrl: '', urlProperty: ''}
+  buttons: { faIcon: string, baseRouteUrl: string, buttonProperty: string }[] = [
+    { faIcon : 'user', baseRouteUrl: 'members/', buttonProperty: 'userName'},
+    { faIcon : 'heart', baseRouteUrl: '', buttonProperty: 'addLike'},
+    { faIcon : 'envelope', baseRouteUrl: '', buttonProperty: ''}
   ]
 
-  constructor() { }
+  constructor(
+    private memberService: MembersService,
+    private toastrService: ToastrService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
   }
 
 
-  getRouterLink(button: { faIcon: string, baseRouteUrl: string, urlProperty: string }): string {
-    const property = button.urlProperty as keyof Member;
-    if (this.member && this.member[property]) {
-      return button.baseRouteUrl + this.member[property];
+  makeAction(button: { faIcon: string, baseRouteUrl: string, buttonProperty: string }): void {
+    switch(button.buttonProperty) {
+      case 'userName':
+        this.router.navigateByUrl(`/${button.baseRouteUrl}${this.member?.userName}`)
+        break;
+      case 'addLike':
+        this.addLike()
     }
-    return '/not-found';
+  }
+
+  public addLike(): void {
+    if (!this.member) return;
+    this.memberService.addLike(this.member.userName).
+      subscribe({
+        next: () => {
+          if(!this.member) return;
+          let nameToShow = (this.member.knownAs)?this.member.knownAs:this.member.userName;
+          this.toastrService.success(`You have liked ${nameToShow}`);
+        }
+      })
   }
 
 }

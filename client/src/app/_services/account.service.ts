@@ -20,7 +20,6 @@ export class AccountService {
   public login(model: any): Observable<void> {
     return this.httpClient.post<User>(this.accountApi + '/login', model).pipe(
         map((response: User) => {
-          console.log(response)
           const user = response;
           if (user) {
             this.setCurrentUser(user);

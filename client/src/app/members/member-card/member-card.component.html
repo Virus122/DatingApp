@@ -3,7 +3,7 @@
         <img src="{{member.photoUrl}}" alt="member.knownAs" class="card-img-top">
         <ul class="list-inline member-icons animate text-center">
             <li *ngFor="let button of buttons" class="list-item">
-                <button [routerLink]="getRouterLink(button)" class="action-button">
+                <button (click)="makeAction(button)" class="action-button">
                     <i [ngClass]="'fa fa-' + button.faIcon"></i>
                 </button>
             </li>

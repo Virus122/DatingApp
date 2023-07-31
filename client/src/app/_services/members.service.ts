@@ -13,6 +13,7 @@ import { AccountService } from './account.service';
 })
 export class MembersService {
   private usersUrl = environment.apiUrl.users;
+  private likesUrl = environment.apiUrl.likes;
   members: Member[] = [];
   private memberCache = new Map();
   user: User | undefined;
@@ -98,6 +99,18 @@ export class MembersService {
 
   public deletePhoto(photoId: number) {
     return this.httpClient.delete(`${this.usersUrl}/delete-photo/${photoId}`)
+  }
+
+  public addLike(username: string): Observable<Object> {
+    return this.httpClient.post(`${this.likesUrl}/${username}`, {});
+  }
+
+  public getLikes(predicate:string, pageNUmber: number, pageSize: number): Observable<PaginatedResult<Member[]>> {
+    let params = this.getPaginationHeaders(pageNUmber, pageSize);
+    
+    params = params.append('predicate', predicate);
+
+    return this.getPaginatedResult<Member[]>(this.likesUrl, params);
   }
 
   private getPaginationHeaders(pageNumber: number, pageSize: number): HttpParams {
